@@ -59,14 +59,14 @@ bun dev
 
 ### 📦 Backend (`apps/backend/.env`)
 ```env
-DATABASE_URL=postgresql://...
-JWT_SECRET=your-secret
+DATABASE_URL=
+JWT_SECRET=
 FRONTEND_URL=http://127.0.0.1:1420
 ```
 
 ### 💻 Frontend (`apps/frontend/.env`)
 ```env
-BACKEND_URL=http://127.0.0.1:3000
+BACKEND_URL=
 ```
 
 ## ✨ Credits
