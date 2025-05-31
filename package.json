@@ -1,0 +1,13 @@
+{
+    "name": "esemka-monorepo",
+    "private": true,
+    "workspaces": ["apps/*"],
+    "packageManager" : "bun@1.2.12",
+    "scripts": {
+        "dev": "turbo run dev --parallel",
+        "build": "turbo run build"
+    },
+    "devDependencies": {
+    "turbo": "^2.5.4"
+  }
+}
