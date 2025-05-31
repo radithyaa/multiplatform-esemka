@@ -51,6 +51,7 @@ cd tauri-monorepo-app
 ```bash
 bun install
 bun dev
+*or use npm, yarn, pnpm
 ```
 
 ---
