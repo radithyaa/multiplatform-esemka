@@ -1,11 +1,15 @@
-import { sign as jwtSign, verify as jwtVerify } from "hono/jwt"
+import { sign, verify } from "hono/jwt"
 
 const secret = process.env.JWT_SECRET as string
 
-export function sign(payload: Record<string, unknown>) {
-  return jwtSign(payload, secret)
+export function createJWT(payload: Record<string, unknown>) {
+  return sign(payload, secret)
 }
 
-export async function verify(token: string) {
-  return await jwtVerify(token, secret)
+export async function verifyJWT(token: string) {
+  try {
+    return await verify(token, secret)
+  } catch (err) {
+    return null
+  }
 }

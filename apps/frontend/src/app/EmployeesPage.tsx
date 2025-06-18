@@ -5,7 +5,10 @@ import { useQuery } from '@tanstack/react-query'
 import type { Employee } from './../lib/types';
 
 const fetchEmployees = async () => {
-  const res = await fetch('http://127.0.0.1:3000/employees')
+  const res = await fetch('http://localhost:3000/employees', {
+    method: 'GET',
+    credentials: 'include'
+  })
   if (!res.ok) {
     throw new Error('Gagal fetch data karyawan')
   }

@@ -28,10 +28,10 @@ employeesRoute.post('/login', async (c) => {
     try{
         const {name, password} = await c.req.json()
         const user = await db.select().from(employee).where(eq(employee.name, name)).then(res=> res[0])
-        if (!user) return c.json({ message: "User not found" }, 401)
+        if (!user) return c.json({ message: "User not found", field: "username" }, 401)
 
         const valid = await bcrypt.compare(password, user.password)
-        if (!valid) return c.json({ message: "Invalid password" }, 401)
+        if (!valid) return c.json({ message: "Invalid password", field : 'password' }, 401)
 
         const token = jwt.sign({ id: user.id, username: user.name }, process.env.JWT_SECRET as string, { expiresIn: "1d" })
 
@@ -40,7 +40,7 @@ employeesRoute.post('/login', async (c) => {
             maxAge: 60 * 60 * 24,
             path: "/",
             secure: true,
-            sameSite: "Strict"
+            sameSite: "none",
         })
         return c.json({ message: "Login successful" })
     }

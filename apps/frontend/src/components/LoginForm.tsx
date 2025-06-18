@@ -6,9 +6,10 @@ import { Input } from './ui/input'
 import { Button } from './ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { useState } from 'react'
-import { redirect, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 function LoginForm() {
+  
     const [isSubmitting, setIsSubmitting] = useState<boolean>()
     const navigate = useNavigate()
 
@@ -22,7 +23,7 @@ function LoginForm() {
 
   const onSubmit = async (data : Login) => {
     // setIsSubmitting(true)
-    const res = await fetch ("http://localhost:3000/employees/login", {
+    const res = await fetch (`${ import.meta.env.VITE_BACKEND_URL }/employees/login`, {
         method: "POST",
         body: JSON.stringify(data),
         headers: {"Content-Type": "application/json"},
@@ -30,22 +31,26 @@ function LoginForm() {
     })
         
     const response: { errors?: { field: "name" | "password" | "root"; message: string }[]; message?: string } = await res.json()
-    if(!res.ok){
-    if (response.errors) {
+    if(res.ok){
+      // console.log(response)
+      // setIsSubmitting(false)
+      // form.reset()
+      // redirect('/employees')
+      // navigate('/employees')
+      navigate('/employees', { replace: true })
+      return
+    }
+    else if (response.errors) {
     response.errors.forEach((error: { field: "name" | "password" | "root"; message: string }) => {
       form.setError(error.field , {
         type: "manual",
         message: error.message,
       })
     })
-  }else {
+    }
+    else {
       form.setError("root", { message: response.message || "Login failed" });
     }
-    }
-
-    // redirect('/employees')
-    navigate('/employees')
-    
     setIsSubmitting(false)
   };
 
