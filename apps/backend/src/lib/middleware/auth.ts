@@ -6,15 +6,14 @@ export const authMiddleware: MiddlewareHandler = async (c, next) => {
   const token = getCookie(c,'auth_token')
   if (!token) {
     console.error(token)
-    return c.json({ error: 'Unauthorized: No token provided' }, 401)
+    return c.json({ error: 'Unauthorized: You must Login' }, 401)
   }
 
   try {
     const user = await verifyJWT(token)
-    // c.set("user", user) // bisa digunakan di route
-    return c.json({"user": user})
+    c.set("user", user)
     await next()
   } catch (err) {
-    return c.json({ error: 'Unauthorized: Invalid or expired token' }, 401)
+    return c.json({ error: 'Unauthorized: Please Login Again' }, 401)
   }
 }

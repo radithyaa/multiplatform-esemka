@@ -33,7 +33,7 @@ employeesRoute.post('/login', async (c) => {
         const valid = await bcrypt.compare(password, user.password)
         if (!valid) return c.json({ message: "Invalid password", field : 'password' }, 401)
 
-        const token = jwt.sign({ id: user.id, username: user.name }, process.env.JWT_SECRET as string, { expiresIn: "1d" })
+        const token = jwt.sign({ id: user.id, username: user.name, job: user.job}, process.env.JWT_SECRET as string, { expiresIn: "1d" })
 
         setCookie(c, "auth_token", token, {
             httpOnly: true,
