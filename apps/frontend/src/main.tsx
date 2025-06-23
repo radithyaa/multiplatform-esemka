@@ -13,6 +13,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import '@/App.css'
 import { ThemeProvider } from "./components/theme-provider";
 import NotFoundPage from "./app/NotFoundPage";
+import { AuthProvider } from "./context/AuthContext";
 
 const queryClient = new QueryClient()
 
@@ -64,7 +65,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode >
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <QueryClientProvider client={queryClient}>
-        <RouterProvider  router={router} />
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
   </React.StrictMode>

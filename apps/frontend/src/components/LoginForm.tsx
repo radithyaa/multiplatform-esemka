@@ -1,4 +1,3 @@
-import { Login, loginSchema } from '@/lib/types'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form'
@@ -7,11 +6,16 @@ import { Button } from './ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/context/AuthContext'
+import { loginSchema, Login } from './../lib/types';
 
 function LoginForm() {
   
+  const {accessToken} = useAuth()
     const [isSubmitting, setIsSubmitting] = useState<boolean>()
     const navigate = useNavigate()
+    const { login } = useAuth()
+    
 
     const form = useForm<Login>({
     resolver: zodResolver(loginSchema),
@@ -22,43 +26,35 @@ function LoginForm() {
   });
 
   const onSubmit = async (data : Login) => {
-    // setIsSubmitting(true)
-    const res = await fetch (`${ import.meta.env.VITE_BACKEND_URL }/employees/login`, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {"Content-Type": "application/json"},
-        credentials: 'include'
-    })
-        
-    const response: { errors?: { field: "name" | "password" | "root"; message: string }[]; message?: string } = await res.json()
-    if(res.ok){
-      // console.log(response)
-      // setIsSubmitting(false)
-      // form.reset()
-      // redirect('/employees')
-      // navigate('/employees')
+    setIsSubmitting(true)
+    const res = await login(data)
+            
+    if(!res){
       navigate('/employees', { replace: true })
       return
     }
-    else if (response.errors) {
-    response.errors.forEach((error: { field: "name" | "password" | "root"; message: string }) => {
-      form.setError(error.field , {
+    else if (res) {
+      form.setError(res.field , {
         type: "manual",
-        message: error.message,
+        message: res.message,
       })
-    })
     }
     else {
-      form.setError("root", { message: response.message || "Login failed" });
+      form.setError("root", { message: res || "Login failed" });
     }
     setIsSubmitting(false)
-  };
+    }
 
+  // Redirect if already logged in
+  if (accessToken) {
+    navigate('/employees', { replace: true });
+    return null; // Prevent rendering the form if already logged in
+  }
   return (
     <div className=''>
-    <Card className='w-72 bg-background '>
+    <Card className='w-80 h-96 flex justify-center bg-background '>
         <CardHeader>
-            <CardTitle className='text-center text-md'>Sign In</CardTitle>
+            <CardTitle className='text-center text-md relative bottom-3'>Sign In</CardTitle>
         </CardHeader>
         <CardContent>
             <Form {...form}>

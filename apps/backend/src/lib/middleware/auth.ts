@@ -1,19 +1,25 @@
 import { MiddlewareHandler } from "hono"
-import { verifyJWT } from "../utils/jwt"
-import { getCookie } from 'hono/cookie'
+import { verifyAccessToken } from "../utils/jwt"
 
 export const authMiddleware: MiddlewareHandler = async (c, next) => {
-  const token = getCookie(c,'auth_token')
-  if (!token) {
-    console.error(token)
-    return c.json({ error: 'Unauthorized: You must Login' }, 401)
+  const authHeader = c.req.header('Authorization')
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return c.json({ error: 'Unauthorized: No token' }, 401)
   }
 
+  const token = authHeader.split(' ')[1]
+
   try {
-    const user = await verifyJWT(token)
+    const user = await verifyAccessToken(token)
+    if(!user){
+      throw Error
+    }
     c.set("user", user)
     await next()
   } catch (err) {
-    return c.json({ error: 'Unauthorized: Please Login Again' }, 401)
+    return c.json({ error: 'Invalid or Expired Token' }, 401)
   }
 }
+
+export default authMiddleware

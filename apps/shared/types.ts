@@ -13,8 +13,8 @@ export const customerWithIdSchema = customerSchema.extend({
 // === EMPLOYEE ===
 export const employeeSchema = z.object({
   job: z.string().max(50),
-  password: z.string().max(100, { message: "Password maximum 100 characters" }).min(5, { message: "Password must be at least 5 characters" }),
-  name: z.string().max(50, { message: 'Name maximum 50 characters' }).min(3, { message: 'Name must be at least 3 characters' }),
+  password: z.string().max(100),
+  name: z.string().max(50, {message: 'Nama maksimal 50 huruf'}).min(3, {message: 'Nama harus minimal 3 huruf'}),
   email: z.string().max(50),
   address: z.string().max(200),
   phone: z.string().max(20),

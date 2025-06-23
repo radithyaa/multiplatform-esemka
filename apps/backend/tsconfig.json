@@ -4,6 +4,7 @@
     "baseUrl": "./src",
     "paths": {
       "@/*": ["*"],
+      "@shared/*": ["../shared/*"]
     },
     "module": "esnext",
     "target": "esnext",

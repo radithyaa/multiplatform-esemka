@@ -6,8 +6,7 @@ import { eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import z from 'zod'
 import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
-import { deleteCookie, setCookie } from "hono/cookie"
+// import jwt from "jsonwebtoken"
 
 const employeesRoute = new Hono()
 
@@ -22,46 +21,6 @@ employeesRoute.get('/', async (c) => {
         return c.json({error: 'Failed to fetch employees'}, 500)
     }
 })
-
-//  === Post Login Route ===
-employeesRoute.post('/login', async (c) => {
-    try{
-        const {name, password} = await c.req.json()
-        const user = await db.select().from(employee).where(eq(employee.name, name)).then(res=> res[0])
-        if (!user) return c.json({ message: "User not found", field: "username" }, 401)
-
-        const valid = await bcrypt.compare(password, user.password)
-        if (!valid) return c.json({ message: "Invalid password", field : 'password' }, 401)
-
-        const token = jwt.sign({ id: user.id, username: user.name, job: user.job}, process.env.JWT_SECRET as string, { expiresIn: "1d" })
-
-        setCookie(c, "auth_token", token, {
-            httpOnly: true,
-            maxAge: 60 * 60 * 24,
-            path: "/",
-            secure: true,
-            sameSite: "none",
-        })
-        return c.json({ message: "Login successful" })
-    }
-    catch(e){
-        console.error(e)
-        return c.json({error: 'Failed to login'}, 500)
-    }
-})
-
-//  === Post Logout Route ===
-employeesRoute.post('/logout', async (c) => {
-    try{
-        deleteCookie(c, "auth_token")
-        return c.json({ message: "Logout successful" })
-    }
-    catch(e){
-        console.error(e)
-        return c.json({error: 'Failed to logout'}, 500)
-    }
-})
-
 
 // === Add ===
 employeesRoute.post('/', async (c) => {

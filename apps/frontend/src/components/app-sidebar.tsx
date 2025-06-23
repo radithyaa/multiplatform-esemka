@@ -1,7 +1,7 @@
 import { Users, HandPlatter, User , LogOut, Banknote, NotebookText, WashingMachine, Moon, Sun } from "lucide-react"
 
 
-import { Link, useLocation } from "react-router";
+import { Link, replace, useLocation, useNavigate } from "react-router";
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sidebar"
 import { useTheme } from "./theme-provider";
 import { Switch } from "./ui/switch";
+import { useAuth } from "@/context/AuthContext";
 
 // Menu items.
 const items = [
@@ -29,6 +30,18 @@ export function AppSidebar() {
   const currentPath = location.pathname;
   const {setOpen, open} = useSidebar()
   const { theme, setTheme } = useTheme()
+  const { logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setOpen(false); // Tutup sidebar setelah logout
+      navigate("/sign-in", { replace: true }); // Redirect ke halaman login
+    } catch (error) {
+      // console.error("Logout failed:", error);
+    }
+  }
 
   return (
     <Sidebar collapsible="icon" variant="sidebar" className="z-50">
@@ -75,7 +88,7 @@ export function AppSidebar() {
           }
           <Switch  checked={theme === "dark"}/>
         </SidebarMenuButton>
-        <SidebarMenuButton size={"lg"}           className={`mx-1 ${open? "text-muted-foreground": "text-muted-foreground"}`}>
+        <SidebarMenuButton size={"lg"} className={`mx-1 ${open? "text-muted-foreground": "text-muted-foreground"}`} onClick={handleLogout}>
           <LogOut className="mx-2"/>
           <span>Sign Out</span>
         </SidebarMenuButton>
