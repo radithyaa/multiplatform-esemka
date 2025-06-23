@@ -67,7 +67,7 @@ FRONTEND_URL=http://127.0.0.1:1420
 
 ### 💻 Frontend (`apps/frontend/.env`)
 ```env
-BACKEND_URL=
+BACKEND_URL=http://127.0.0.1:3000
 ```
 
 ## ✨ Credits
